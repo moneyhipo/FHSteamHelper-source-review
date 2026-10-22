@@ -1,0 +1,4 @@
+# Build output and IDE files
+bin/
+obj/
+.vs/
