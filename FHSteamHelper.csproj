@@ -7,13 +7,18 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
-    <PublishSingleFile>true</PublishSingleFile>
+    <!-- Native AOT: a plain native exe. The compressed single-file bundle
+         (.NET runtime packed inside) was flagged by 2 antivirus engines on
+         VirusTotal; the native build by none (2026-10-24). -->
+    <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
     <PlatformTarget>x64</PlatformTarget>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>none</DebugType>
+    <Company>moneyhippo</Company>
+    <Product>FH2 Co-op Steam Helper</Product>
+    <AssemblyTitle>FH2 Co-op Steam Helper</AssemblyTitle>
+    <Description>Connects the FH2 co-op mod to Steam invites</Description>
+    <Version>0.41.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

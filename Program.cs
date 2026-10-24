@@ -74,8 +74,27 @@ internal static class Program
     private static CallResult<LobbyCreated_t>? _lobbyCreated;
     private static CallResult<LobbyEnter_t>? _lobbyEntered;
 
+    // Native AOT: Steamworks.NET reads its callback structs with
+    // Marshal.PtrToStructure(IntPtr, Type); the compiler only makes the
+    // marshalling code for types it sees used. Name them here (never run).
+    private static void KeepCallbackTypes()
+    {
+        if (Environment.GetEnvironmentVariable("FH_AOT_KEEP_NEVER") != "run") return;
+        var p = IntPtr.Zero;
+        Marshal.PtrToStructure<GameLobbyJoinRequested_t>(p);
+        Marshal.PtrToStructure<GameRichPresenceJoinRequested_t>(p);
+        Marshal.PtrToStructure<SteamNetworkingMessagesSessionRequest_t>(p);
+        Marshal.PtrToStructure<SteamNetworkingMessagesSessionFailed_t>(p);
+        Marshal.PtrToStructure<LobbyCreated_t>(p);
+        Marshal.PtrToStructure<LobbyEnter_t>(p);
+        Marshal.PtrToStructure<SteamAPICallCompleted_t>(p);
+        Marshal.PtrToStructure<SteamNetworkingIdentity>(p);
+        Marshal.PtrToStructure<SteamNetworkingMessage_t>(p);
+    }
+
     private static int Main(string[] args)
     {
+        KeepCallbackTypes();
         for (int i = 0; i < args.Length - 1; i++)
         {
             if (args[i] == "--port") int.TryParse(args[i + 1], out _controlPort);
