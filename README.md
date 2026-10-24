@@ -29,7 +29,7 @@ The project is configured for a Native AOT Windows x64 publish (`PublishAot`). N
 To recreate the mod ZIP after building, place the published `FHSteamHelper.exe` in the mod's `mod/fh_steam_helper/` folder alongside `steam_api64.dll` and `steam_appid.txt`, then run this from the main mod repository root:
 
 ```powershell
-node .\tools\make_release.js 0.40
+node .\tools\make_release.js 0.41
 ```
 
 ## Third-party components
