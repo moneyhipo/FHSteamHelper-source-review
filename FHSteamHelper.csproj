@@ -18,7 +18,7 @@
     <Product>FH2 Co-op Steam Helper</Product>
     <AssemblyTitle>FH2 Co-op Steam Helper</AssemblyTitle>
     <Description>Connects the FH2 co-op mod to Steam invites</Description>
-    <Version>0.41.0</Version>
+    <Version>0.42.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

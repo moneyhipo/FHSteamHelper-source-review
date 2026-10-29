@@ -10,7 +10,7 @@
 //                    {"cmd":"inviteUser","id":"<id>"} lobby invite -> {"evt":"invited"}
 //                    {"cmd":"invite"}                Steam overlay dialog (unusable in NW.js)
 //                    {"cmd":"join","lobby":"<id>"}   join a friend's lobby
-//   helper -> game   {"evt":"name","name":"..."}
+//   helper -> game   {"evt":"name","name":"...","ver":1}  ver: ProtocolVersion
 //                    {"evt":"lobby","lobby":"<id>"}
 //                    {"evt":"joinRequest","lobby":"<id>"}  invite accepted
 //                    {"evt":"ready","port":27601}    connect the game here
@@ -38,6 +38,9 @@ using Steamworks;
 internal static class Program
 {
     private const int Channel = 0;
+    // Sent with our Steam name ("ver"): the game asks for a newer helper when
+    // this is below the version it needs (the helper is a separate download).
+    private const int ProtocolVersion = 1;
     private const int ChunkSize = 256 * 1024;
     private const int SendReliable = 8; // k_nSteamNetworkingSend_Reliable
     private const byte KindData = 0;
@@ -286,18 +289,23 @@ internal static class Program
         return json.Substring(i, stop - i);
     }
 
+    private static void SendName()
+    {
+        SendEvent("{\"evt\":\"name\",\"name\":\"" + Esc(SteamFriends.GetPersonaName()) + "\",\"ver\":" + ProtocolVersion + "}");
+    }
+
     private static void HandleCommand(string line)
     {
         var cmd = Field(line, "cmd");
         switch (cmd)
         {
             case "hello":
-                SendEvent("{\"evt\":\"name\",\"name\":\"" + Esc(SteamFriends.GetPersonaName()) + "\"}");
+                SendName();
                 break;
             case "host":
                 if (int.TryParse(Field(line, "port"), out var port)) _hostPort = port;
                 _isHost = true;
-                SendEvent("{\"evt\":\"name\",\"name\":\"" + Esc(SteamFriends.GetPersonaName()) + "\"}");
+                SendName();
                 if (_lobby == CSteamID.Nil)
                 {
                     _lobbyCreated!.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 4));
@@ -382,7 +390,7 @@ internal static class Program
         _lobby = new CSteamID(data.m_ulSteamIDLobby);
         _hostId = SteamMatchmaking.GetLobbyOwner(_lobby);
         StartGuestListener();
-        SendEvent("{\"evt\":\"name\",\"name\":\"" + Esc(SteamFriends.GetPersonaName()) + "\"}");
+        SendName();
         SendEvent("{\"evt\":\"ready\",\"port\":" + _guestPort + "}");
     }
 
